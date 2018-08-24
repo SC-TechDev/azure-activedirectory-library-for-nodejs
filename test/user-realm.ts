@@ -41,7 +41,7 @@ suite('UserRealm', function() {
 
   function setupExpectedResponse(doc: any) {
     var userRealmPath = cp.userRealmPathTemplate.replace('<user>', encodeURIComponent(user));
-    var query = 'api-version=1.0';
+    var query = 'api-version=1.1';
 
     var userRealmRequest = nock(authority)
                             .filteringPath(function(path) {
@@ -103,4 +103,3 @@ suite('UserRealm', function() {
     negativeTest(response, done);
   });
 });
-

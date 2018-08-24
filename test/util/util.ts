@@ -125,7 +125,7 @@ parameters.successResponse = successResponse;
 parameters.successResponseWithRefresh = successResponseWithRefresh;
 parameters.authUrl = url.parse(parameters.evoEndpoint + '/' + parameters.tenant);
 parameters.tokenPath = '/oauth2/token';
-parameters.extraQP = '?api-version=1.0';
+parameters.extraQP = '?api-version=1.1';
 parameters.tokenUrlPath = parameters.authUrl.pathname + parameters.tokenPath + parameters.extraQP;
 parameters.deviceCodePath = '/oauth2/devicecode'
 parameters.deviceCodeUrlPath = parameters.authUrl.pathname + parameters.deviceCodePath + parameters.extraQP;
@@ -443,7 +443,7 @@ util.setupExpectedInstanceDiscoveryRequest = function(httpCode: any, discoveryHo
   instanceDiscoveryUrl.pathname = '/common/discovery/instance';
   instanceDiscoveryUrl.query = {};
   instanceDiscoveryUrl.query['authorization_endpoint'] = url.format(authority);
-  instanceDiscoveryUrl.query['api-version'] = '1.0';
+  instanceDiscoveryUrl.query['api-version'] = '1.1';
 
   instanceDiscoveryUrl = url.parse(url.format(instanceDiscoveryUrl));
 
@@ -472,7 +472,7 @@ util.setupExpectedUserRealmResponse = function (httpCode: any, returnDoc: any, a
   userRealmAuthority = this.trimPathFromUrl(userRealmAuthority);
 
   var userRealmPath = parameters.userRealmPathTemplate.replace('<user>', encodeURIComponent(parameters.username));
-  var query = 'api-version=1.0';
+  var query = 'api-version=1.1';
 
   var userRealmRequest = nock(userRealmAuthority)
     .filteringPath(function (path) {
