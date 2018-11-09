@@ -2,17 +2,17 @@
 The ADAL for node.js library makes it easy for node.js applications to authenticate to AAD in order to access AAD protected web resources.  It supports 3 authentication modes shown in the quickstart code below.
 
 ## Versions
-Current version - 0.1.22  
+Current version - 0.1.28  
 Minimum recommended version - 0.1.22  
 You can find the changes for each version in the [change log](https://github.com/AzureAD/azure-activedirectory-library-for-nodejs/blob/master/changelog.txt).
 
 ## Samples and Documentation
 
-[We provide a full suite of sample applications and documentation on GitHub](https://github.com/azure-samples?q=active-directory) to help you get started with learning the Azure Identity system. This includes tutorials for native clients such as Windows, Windows Phone, iOS, OSX, Android, and Linux. We also provide full walkthroughs for authentication flows such as OAuth2, OpenID Connect, Graph API, and other awesome features. 
+[We provide a full suite of sample applications and documentation on GitHub](https://github.com/azure-samples?q=active-directory) to help you get started with learning the Azure Identity system. This includes tutorials for native clients such as Windows, Windows Phone, iOS, OSX, Android, and Linux. We also provide full walkthroughs for authentication flows such as OAuth2, OpenID Connect, Graph API, and other awesome features.
 
 ## Community Help and Support
 
-We leverage [Stack Overflow](http://stackoverflow.com/) to work with the community on supporting Azure Active Directory and its SDKs, including this one! We highly recommend you ask your questions on Stack Overflow (we're all on there!) Also browser existing issues to see if someone has had your question before. 
+We leverage [Stack Overflow](http://stackoverflow.com/) to work with the community on supporting Azure Active Directory and its SDKs, including this one! We highly recommend you ask your questions on Stack Overflow (we're all on there!) Also browser existing issues to see if someone has had your question before.
 
 We recommend you use the "adal" tag so we can see it! Here is the latest Q&A on Stack Overflow for ADAL: [http://stackoverflow.com/questions/tagged/adal](http://stackoverflow.com/questions/tagged/adal)
 
@@ -22,12 +22,40 @@ If you find a security issue with our libraries or services please report it to 
 
 ## Contributing
 
-All code is licensed under the Apache 2.0 license and we triage actively on GitHub. We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. 
+All code is licensed under the Apache 2.0 license and we triage actively on GitHub. We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now.
 
 ## Quick Start
 ### Installation
 
 ``` $ npm install adal-node ```
+
+### Configure the logging
+
+#### Personal Identifiable Information (PII) & Organizational Identifiable Information (OII)
+
+By default, ADAL logging does not capture or log any PII or OII. The library allows app developers to turn this on by configuring the `loggingWithPII` flag in the logging options. By turning on PII or OII, the app takes responsibility for safely handling highly-sensitive data and complying with any regulatory requirements.
+
+```javascript
+var logging = require('adal-node').Logging;
+
+//PII or OII logging disabled. Default Logger does not capture any PII or OII.
+logging.setLoggingOptions({
+  log: function(level, message, error) {
+    // provide your own implementation of the log function
+  },
+  level: logging.LOGGING_LEVEL.VERBOSE, // provide the logging level
+  loggingWithPII: false  // Determine if you want to log personal identitification information. The default value is false.
+});
+
+//PII or OII logging enabled.
+logging.setLoggingOptions({
+  log: function(level, message, error) {
+    // provide your own implementation of the log function
+  },
+  level: logging.LOGGING_LEVEL.VERBOSE,
+  loggingWithPII: true
+});
+```
 
 ### Authorization Code
 
@@ -43,13 +71,13 @@ var tenant = 'myTenant';
 var authorityUrl = authorityHostUrl + '/' + tenant;
 var redirectUri = 'http://localhost:3000/getAToken';
 var resource = '00000002-0000-0000-c000-000000000000';
-var templateAuthzUrl = 'https://login.windows.net/' + 
-                        tenant + 
+var templateAuthzUrl = 'https://login.windows.net/' +
+                        tenant +
                         '/oauth2/authorize?response_type=code&client_id=' +
-                        clientId + 
-                        '&redirect_uri=' + 
-                        redirectUri + 
-                        '&state=<state>&resource=' + 
+                        clientId +
+                        '&redirect_uri=' +
+                        redirectUri +
+                        '&state=<state>&resource=' +
                         resource;
 
 function createAuthorizationUrl(state) {
@@ -84,7 +112,7 @@ app.get('/getAToken', function(req, res) {
     req.query.code,
     redirectUri,
     resource,
-    clientId, 
+    clientId,
     clientSecret,
     function(err, response) {
       var errorMessage = '';
@@ -103,18 +131,18 @@ app.get('/getAToken', function(req, res) {
 See the [client credentials sample](https://github.com/MSOpenTech/azure-activedirectory-library-for-nodejs/blob/master/sample/client-credentials-sample.js).
 
 ```javascript
-var adal = require('adal-node').AuthenticationContext;
+var AuthenticationContext = require('adal-node').AuthenticationContext;
 
 var authorityHostUrl = 'https://login.windows.net';
-var tenant = 'myTenant';
+var tenant = 'myTenant.onmicrosoft.com'; // AAD Tenant name.
 var authorityUrl = authorityHostUrl + '/' + tenant;
-var clientId = 'yourClientIdHere';
-var clientSecret = 'yourAADIssuedClientSecretHere'
-var resource = '00000002-0000-0000-c000-000000000000';
+var applicationId = 'yourApplicationIdHere'; // Application Id of app registered under AAD.
+var clientSecret = 'yourAADIssuedClientSecretHere'; // Secret generated for app. Read this environment variable.
+var resource = '00000002-0000-0000-c000-000000000000'; // URI that identifies the resource for which the token is valid.
 
 var context = new AuthenticationContext(authorityUrl);
 
-context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, function(err, tokenResponse) {
+context.acquireTokenWithClientCredentials(resource, applicationId, clientSecret, function(err, tokenResponse) {
   if (err) {
     console.log('well that didn\'t work: ' + err.stack);
   } else {
@@ -124,7 +152,7 @@ context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, func
 ```
 
 ## License
-Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved. Licensed under the Apache License, Version 2.0 (the "License"); 
+Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
 
 ## We Value and Adhere to the Microsoft Open Source Code of Conduct
 
